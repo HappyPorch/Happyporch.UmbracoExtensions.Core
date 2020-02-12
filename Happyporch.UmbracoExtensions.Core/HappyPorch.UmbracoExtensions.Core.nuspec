@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>HappyPorch Umbraco Core Extensions</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/HappyPorch/HappyPorch.UmbracoExtensions.Core</projectUrl>
+    <iconUrl>https://happyporch.com/media/1043/cropped-happyporch-logo-horizontal-trans-site-header-1.png</iconUrl>
+    <description>Extensions, helpers and services for Umbraco 8 websites</description>
+    <copyright>Copyright 2020</copyright>
+    <tags>Umbraco</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+</package>
