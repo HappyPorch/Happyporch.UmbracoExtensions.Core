@@ -403,6 +403,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationConstants.cs" />
+    <Compile Include="Components\RemoveDashboardComponent.cs" />
+    <Compile Include="Components\SubscribeToEditorModelEvents.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\ConfigurationExtensions.cs" />
     <Compile Include="Extensions\LinkExtensions.cs" />
@@ -413,7 +415,11 @@
     <Compile Include="Extensions\UrlExtensions.cs" />
     <Compile Include="Extensions\ViewDataDictionaryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyEditors\NestedContentElementsPropertyEditor.cs" />
+    <Compile Include="ReCaptcha\Recaptcha.cs" />
+    <Compile Include="ReCaptcha\RecaptchaHtmlHelper.cs" />
     <Compile Include="Services\EmailService.cs" />
+    <Compile Include="ValueConverters\NestedContentElementsValueConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -423,6 +429,9 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
