@@ -8,7 +8,7 @@ using System.Web.Mvc.Html;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web.Mvc;
 
-namespace Happyporch.UmbracoExtensions.Core.Extensions
+namespace HappyPorch.UmbracoExtensions.Core.Extensions
 {
     public static class PartialViewExtensions
     {

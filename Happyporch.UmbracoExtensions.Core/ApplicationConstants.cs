@@ -1,4 +1,4 @@
-﻿namespace Happyporch.UmbracoExtensions.Core
+﻿namespace HappyPorch.UmbracoExtensions.Core
 {
     public class ApplicationConstants
     {

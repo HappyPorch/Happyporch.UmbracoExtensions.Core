@@ -1,4 +1,4 @@
-﻿using Happyporch.UmbracoExtensions.Core.Extensions;
+﻿using HappyPorch.UmbracoExtensions.Core.Extensions;
 using NUnit.Framework;
 
 namespace Endzone.Umbraco.Extensions.Tests

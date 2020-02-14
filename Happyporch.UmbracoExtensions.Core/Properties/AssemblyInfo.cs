@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Happyporch.UmbracoExtensions.Core")]
+[assembly: AssemblyTitle("HappyPorch.UmbracoExtensions.Core")]
 [assembly: AssemblyDescription("Extensions, helpers and services for Umbraco 8 websites")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HappyPorch.com")]
-[assembly: AssemblyProduct("Happyporch.UmbracoExtensions.Core")]
+[assembly: AssemblyProduct("HappyPorch.UmbracoExtensions.Core")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

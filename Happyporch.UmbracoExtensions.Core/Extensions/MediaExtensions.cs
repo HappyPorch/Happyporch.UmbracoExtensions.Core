@@ -9,7 +9,7 @@ using Umbraco.Web;
 using Umbraco.Web.Models;
 using UmbracoWeb = Umbraco.Web;
 
-namespace Happyporch.UmbracoExtensions.Core.Extensions
+namespace HappyPorch.UmbracoExtensions.Core.Extensions
 {
     public static class MediaExtensions
     {

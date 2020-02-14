@@ -4,7 +4,7 @@ using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 
-namespace Happyporch.UmbracoExtensions.Core.Extensions
+namespace HappyPorch.UmbracoExtensions.Core.Extensions
 {
     public static class CollectionExtensions
     {

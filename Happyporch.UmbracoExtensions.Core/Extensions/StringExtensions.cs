@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace Happyporch.UmbracoExtensions.Core.Extensions
+namespace HappyPorch.UmbracoExtensions.Core.Extensions
 {
     public static class StringExtensions
     {

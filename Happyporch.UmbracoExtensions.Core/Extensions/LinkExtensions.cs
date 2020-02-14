@@ -4,7 +4,7 @@ using System.Web;
 using System.Web.Mvc;
 using Umbraco.Web.Models;
 
-namespace Happyporch.UmbracoExtensions.Core.Extensions
+namespace HappyPorch.UmbracoExtensions.Core.Extensions
 {
     public static class LinkExtensions
     {
