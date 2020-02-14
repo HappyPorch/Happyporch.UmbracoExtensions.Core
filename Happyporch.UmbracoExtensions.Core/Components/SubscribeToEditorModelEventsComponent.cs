@@ -10,12 +10,12 @@ using Umbraco.Web.Models.ContentEditing;
 namespace HappyPorch.UmbracoExtensions.Core.Components
 {
     [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
-    public class SubscribeToEditorModelEventsComposer : ComponentComposer<SubscribeToEditorModelEvents>
+    public class SubscribeToEditorModelEventsComposer : ComponentComposer<SubscribeToEditorModelEventsComponent>
     {
         //this automatically adds the component to the Components collection of the Umbraco composition
     }
 
-    public class SubscribeToEditorModelEvents : IComponent
+    public class SubscribeToEditorModelEventsComponent : IComponent
     {
         private string[] _reservedTabs = new string[] { "Markup", "Auxiliary Folders", "Delete" };
 

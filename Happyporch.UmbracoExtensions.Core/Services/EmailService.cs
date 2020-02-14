@@ -4,7 +4,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Web;
 
-namespace HappyPorch.UmbracoExtensions.Services
+namespace HappyPorch.UmbracoExtensions.Core.Services
 {
     public static class EmailService
     {

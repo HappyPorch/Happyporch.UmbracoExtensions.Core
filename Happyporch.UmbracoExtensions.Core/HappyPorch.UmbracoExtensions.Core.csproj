@@ -403,8 +403,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationConstants.cs" />
+    <Compile Include="Components\AllowDeletionComponent.cs" />
+    <Compile Include="Components\ErrorPagesComponent.cs" />
     <Compile Include="Components\RemoveDashboardComponent.cs" />
-    <Compile Include="Components\SubscribeToEditorModelEvents.cs" />
+    <Compile Include="Components\RoutingComponent.cs" />
+    <Compile Include="Components\SubscribeToEditorModelEventsComponent.cs" />
+    <Compile Include="Controllers\RobotsController.cs" />
+    <Compile Include="Controllers\SiteMapController.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\ConfigurationExtensions.cs" />
     <Compile Include="Extensions\LinkExtensions.cs" />
@@ -419,6 +424,8 @@
     <Compile Include="ReCaptcha\Recaptcha.cs" />
     <Compile Include="ReCaptcha\RecaptchaHtmlHelper.cs" />
     <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\ErrorPageService.cs" />
+    <Compile Include="Services\SiteMapService.cs" />
     <Compile Include="ValueConverters\NestedContentElementsValueConverter.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -430,9 +437,7 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
