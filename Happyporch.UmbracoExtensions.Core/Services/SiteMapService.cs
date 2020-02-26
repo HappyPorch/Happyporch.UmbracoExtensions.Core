@@ -33,8 +33,8 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
 
             // get all root nodes, or specific root node
             var rootNodes = rootNodeId.HasValue
-                ? new List<IPublishedContent> { _context.ContentCache.GetById(rootNodeId.Value) }
-                : _context.ContentCache.GetAtRoot()
+                ? new List<IPublishedContent> { _context.Content.GetById(rootNodeId.Value) }
+                : _context.Content.GetAtRoot()
                     .Where(x => (x.TemplateId > 0) && x.Value<bool>("HideInXmlsitemap") == false);
 
             if (!rootNodes.Any())
