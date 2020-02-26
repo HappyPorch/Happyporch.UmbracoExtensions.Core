@@ -46,14 +46,14 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
             {
                 pageList.Add(page);
                 // add root node and descendants (with template and not hidden from sitemap)
-                pageList.AddRange(
-                    page.Descendants().Where(x => (x.TemplateId > 0) && x.Value<bool>("HideInXmlsitemap")));
+                var descendants = page.Descendants().Where(x => x.TemplateId > 0 && !x.Value<bool>("HideInXmlsitemap"));
+                pageList.AddRange(descendants);
             }
             return pageList;
         }
 
         /// <summary>
-        /// Gets an XML site map of all the site'pages and descendant pages.
+        /// Gets an XML site map of all the website's pages and descendant pages.
         /// </summary>
         /// <param name="umbracoContext"></param>
         /// <param name="rootNodeId"></param>
@@ -79,22 +79,24 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
                 // add each page as a Url element
                 foreach (var page in pages)
                 {
-                    var url = new XElement(xmlns + "url");
+                    foreach (var culture in page.Cultures)
+                    {
+                        var url = new XElement(xmlns + "url");
 
-                    url.Add(new XElement(xmlns + "loc", page.Url(mode: UrlMode.Absolute)));
-                    url.Add(new XElement(xmlns + "lastmod", page.UpdateDate.ToString("yyyy-MM-dd")));
+                        url.Add(new XElement(xmlns + "loc", page.Url(culture.Key, mode: UrlMode.Absolute)));
+                        url.Add(new XElement(xmlns + "lastmod", page.UpdateDate.ToString("yyyy-MM-dd")));
 
-                    urlSet.Add(url);
+                        urlSet.Add(url);
+                    }
                 }
             }
-
             doc.Add(urlSet);
 
             return doc;
         }
 
         /// <summary>
-        /// Gets an XML site map of all the site'pages and descendant pages in a UTF-8 encoded string.
+        /// Gets an XML site map of all the site's pages and descendant pages in a UTF-8 encoded string.
         /// </summary>
         /// <param name="umbracoContext"></param>
         /// <param name="rootNodeId"></param>
