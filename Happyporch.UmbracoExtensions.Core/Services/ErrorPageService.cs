@@ -30,7 +30,6 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
             _logger = logger;
             _contextReference = _contextFactory.EnsureUmbracoContext();
             _originalRequest = originalRequest ?? _contextReference.UmbracoContext.HttpContext.Request.Url;
-
         }
 
         /// <summary>
@@ -92,9 +91,12 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
                 }
                 foreach (var errorPage in errorPages)
                 {
-                    var output = RenderErrorPage(errorPage);
-                    var siteName = errorPage.AncestorOrSelf(1).Name.ToSafeAlias();
-                    SaveStaticErrorPage(errorPage.Value<string>("StatusCode"), siteName, output);
+                    foreach (var culture in errorPage.Cultures)
+                    {
+                        var output = RenderErrorPage(errorPage, culture.Key);
+                        var siteName = errorPage.AncestorOrSelf(1).Name.ToSafeAlias();
+                        SaveStaticErrorPage(errorPage.Value<string>("StatusCode"), siteName, culture.Key, output);
+                    }
                 }
 
                 foreach (var group in errorPages.GroupBy(x => x.Value<string>("StatusCode")))
@@ -113,7 +115,7 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
         /// </summary>
         /// <param name="page"></param>
         /// <returns></returns>
-        private string RenderErrorPage(IPublishedContent page)
+        private string RenderErrorPage(IPublishedContent page, string culture)
         {
             string output = null;
             //TODO: probably needs some more tweaking
@@ -124,10 +126,8 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
                 uriBuilder.Scheme = _originalRequest.Scheme;
                 uriBuilder.Host = _originalRequest.Host;
 
-                var requestUri = new Uri(uriBuilder.Uri, page.UrlSegment);
-
+                var requestUri = new Uri(uriBuilder.Uri, page.UrlSegment(culture));
                 webClient.Encoding = Encoding.UTF8;
-
                 output = webClient.DownloadString(requestUri.AbsoluteUri);
             }
 
@@ -140,7 +140,7 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
         /// <param name="statusCode"></param>
         /// <param name="siteName"></param>
         /// <param name="html"></param>
-        private void SaveStaticErrorPage(string statusCode, string siteName, string html)
+        private void SaveStaticErrorPage(string statusCode, string siteName, string culture, string html)
         {
             if (string.IsNullOrEmpty(statusCode) || string.IsNullOrEmpty(html))
             {
@@ -148,7 +148,7 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
                 return;
             }
 
-            var pagePath = HostingEnvironment.MapPath($"~/{statusCode}-{siteName}.html");
+            var pagePath = HostingEnvironment.MapPath($"~/{statusCode}-{siteName}-{culture}.html");
 
             try
             {
@@ -178,11 +178,11 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
 
             html.AppendLine("<%@ page trace = \"false\" validateRequest=\"false\" %>");
             html.AppendLine();
-            html.AppendLine("<%-- set correct site name based on request domain --%>");
+            html.AppendLine("<%-- set correct site name based on requested domain and culture --%>");
             html.AppendLine("<% string siteName = \"\"; %>");
             html.AppendLine("<% string hostName = Request.Url.Host; %>");
+            html.AppendLine("<% string culture = \"\"; %>");
             html.AppendLine();
-
             var domains = _domainService.GetAll(false).ToArray();
             var hasNoDomainErrorPages = true;
 
