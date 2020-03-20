@@ -60,5 +60,33 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
 
             return absoluteUri.ToString();
         }
+
+        /// <summary>
+        /// Gets the absolute url of this page along with some query string parameters.
+        /// This is useful when e.g. when we want to keep the page parameter on the canonical url of a page.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public static string UrlAbsoluteWithParameters(this HttpRequestBase request, string[] parameters = null)
+        {
+            var url = request.Url.GetLeftPart(UriPartial.Path);
+            if (parameters == null || parameters.Length == 0)
+            {
+                return url;
+            }
+            var query = string.Empty;
+
+            foreach (var p in parameters)
+            {
+                var value = request.QueryString[p];
+                if (!string.IsNullOrEmpty(value))
+                {
+                    query += $"{p}={value}&";
+                }
+            }
+            query = query.Trim(new char[] { '&' });
+            query = query.Length > 0 ? "?" + query : query;
+            return url + query;
+        }
     }
 }
