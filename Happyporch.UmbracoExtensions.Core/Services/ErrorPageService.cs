@@ -148,7 +148,7 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
                 return;
             }
 
-            var pagePath = HostingEnvironment.MapPath($"~/{statusCode}-{siteName}-{culture}.html");
+            var pagePath = HostingEnvironment.MapPath($"~/{statusCode}-{siteName}.html");
 
             try
             {
