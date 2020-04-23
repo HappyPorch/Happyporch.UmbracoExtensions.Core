@@ -88,5 +88,42 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
             query = query.Length > 0 ? "?" + query : query;
             return url + query;
         }
+
+        /// <summary>
+        /// Updates a parameter in the query string. Adds the parameter if it doesn't exist.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="paramName"></param>
+        /// <param name="paramValue"></param>
+        /// <returns></returns>
+        public static Uri SetParameter(this Uri url, string paramName, object paramValue)
+        {
+            var uriBuilder = new UriBuilder(url);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+
+            query[paramName] = Convert.ToString(paramValue);
+            uriBuilder.Query = query.ToString();
+
+            return new Uri(uriBuilder.ToString());
+        }
+
+        /// <summary>
+        /// Clears the query string and adds a single parameter to it.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="paramName"></param>
+        /// <param name="paramValue"></param>
+        /// <returns></returns>
+        public static Uri SetOnlyParameter(this Uri url, string paramName, object paramValue)
+        {
+            var uriBuilder = new UriBuilder(url);
+            uriBuilder.Query = string.Empty;
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+
+            query[paramName] = Convert.ToString(paramValue);
+            uriBuilder.Query = query.ToString();
+
+            return new Uri(uriBuilder.ToString());
+        }
     }
 }
