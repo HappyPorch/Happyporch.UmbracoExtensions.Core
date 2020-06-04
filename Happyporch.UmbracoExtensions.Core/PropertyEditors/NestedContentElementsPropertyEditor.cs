@@ -2,6 +2,7 @@
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.PropertyEditors;
+using Umbraco.Core.Services;
 using Umbraco.Web.PropertyEditors;
 
 namespace HappyPorch.UmbracoExtensions.Core.PropertyEditors
@@ -17,8 +18,8 @@ namespace HappyPorch.UmbracoExtensions.Core.PropertyEditors
     {
         public const string EditorAlias = Constants.PropertyEditors.Aliases.NestedContent + "Elements";
 
-        public NestedContentElementsPropertyEditor(ILogger logger, Lazy<PropertyEditorCollection> propertyEditors)
-            : base(logger, propertyEditors)
+        public NestedContentElementsPropertyEditor(ILogger logger, Lazy<PropertyEditorCollection> propertyEditors, IDataTypeService dataTypeService, IContentTypeService contentTypeService)
+            : base(logger, propertyEditors, dataTypeService, contentTypeService)
         {
         }
     }
