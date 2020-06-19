@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Models.PublishedContent;
@@ -29,28 +28,32 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
         {
             var content = helper.AssignedContentItem;
             var currentPageId = content.Id;
-            var auxiliaryFolderNode = content?.AncestorOrSelf<TAuxiliaryFolder>();
 
-            if (auxiliaryFolderNode == null)
+            return Current.AppCaches.RequestCache.GetCacheItem<TAuxiliaryType>($"GetAuxiliaryContent_{typeof(TAuxiliaryType).Name}_{currentPageId}", () =>
             {
-                if (Current.UmbracoContext == null || currentPageId == content?.Id)
+                var auxiliaryFolderNode = content?.AncestorOrSelf<TAuxiliaryFolder>();
+
+                if (auxiliaryFolderNode == null)
                 {
-                    // no Umbraco context found or it's for the same node we already checked
+                    if (Current.UmbracoContext == null || currentPageId == content?.Id)
+                    {
+                        // no Umbraco context found or it's for the same node we already checked
+                        return default(TAuxiliaryType);
+                    }
+
+                    // try to get it based on current page ID, in case 'content' is a Nested Content node.
+                    var currentPage = Current.AppCaches.RuntimeCache.GetCacheItem<IPublishedContent>(currentPageId.ToString());
+
+                    auxiliaryFolderNode = currentPage?.AncestorOrSelf<TAuxiliaryFolder>();
+                }
+
+                if (auxiliaryFolderNode == null)
+                {
                     return default(TAuxiliaryType);
                 }
 
-                // try to get it based on current page ID, in case 'content' is a Nested Content node.
-                var currentPage = Current.AppCaches.RuntimeCache.GetCacheItem<IPublishedContent>(currentPageId.ToString());
-
-                auxiliaryFolderNode = currentPage?.AncestorOrSelf<TAuxiliaryFolder>();
-            }
-
-            if (auxiliaryFolderNode == null)
-            {
-                return default(TAuxiliaryType);
-            }
-
-            return property(auxiliaryFolderNode) as TAuxiliaryType;
+                return property(auxiliaryFolderNode) as TAuxiliaryType;
+            });
         }
 
         /// <summary>
@@ -62,25 +65,28 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
         /// <returns></returns>
         public static IPublishedContent GetAuxiliaryContent(this IPublishedContent content)
         {
-            var propertyName = "websiteSettings";
-            var auxiliaryFolderNode = content?.AncestorsOrSelf()?.FirstOrDefault(c => c.HasProperty(propertyName));
-            var currentPage = GetAssignedContentItem();
-
-            if (auxiliaryFolderNode == null)
+            return Current.AppCaches.RequestCache.GetCacheItem<IPublishedContent>($"GetAuxiliaryContent_IPublishedContent_{content?.Id}", () =>
             {
-                if (currentPage == null || currentPage.Id == content?.Id)
+                var propertyName = "websiteSettings";
+                var auxiliaryFolderNode = content?.AncestorsOrSelf()?.FirstOrDefault(c => c.HasProperty(propertyName));
+                var currentPage = GetAssignedContentItem();
+
+                if (auxiliaryFolderNode == null)
                 {
-                    // no Umbraco context found or it's for the same node we already checked
-                    return default(IPublishedContent);
+                    if (currentPage == null || currentPage.Id == content?.Id)
+                    {
+                        // no Umbraco context found or it's for the same node we already checked
+                        return default(IPublishedContent);
+                    }
+
+                    // try to get it based on current page ID, in case 'content' is a Nested Content node.
+                    currentPage = Current.AppCaches.RuntimeCache.GetCacheItem<IPublishedContent>(currentPage.Id.ToString());
+
+                    auxiliaryFolderNode = currentPage?.AncestorsOrSelf()?.FirstOrDefault(c => c.HasProperty(propertyName));
                 }
 
-                // try to get it based on current page ID, in case 'content' is a Nested Content node.
-                currentPage = Current.AppCaches.RuntimeCache.GetCacheItem<IPublishedContent>(currentPage.Id.ToString());
-
-                auxiliaryFolderNode = currentPage?.AncestorsOrSelf()?.FirstOrDefault(c => c.HasProperty(propertyName));
-            }
-
-            return auxiliaryFolderNode?.Value<IPublishedContent>(propertyName);
+                return auxiliaryFolderNode?.Value<IPublishedContent>(propertyName);
+            });
         }
 
         /// <summary>
