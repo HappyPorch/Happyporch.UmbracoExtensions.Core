@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using Umbraco.Core.Models;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
-using Umbraco.Core.Logging;
 
 namespace HappyPorch.UmbracoExtensions.Core.Services
 {
@@ -45,11 +44,32 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
             foreach (var page in rootNodes)
             {
                 pageList.Add(page);
-                // add root node and descendants (with template and not hidden from sitemap)
-                var descendants = page.Descendants().Where(x => x.TemplateId > 0 && !x.Value<bool>("HideInXmlsitemap"));
-                pageList.AddRange(descendants);
+
+                AddChildPages(page, pageList);
             }
             return pageList;
+        }
+
+        /// <summary>
+        /// Recursive function for adding child pages with template and not hidden from sitemap to sitemap list.
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageList"></param>
+        private void AddChildPages(IPublishedContent page, List<IPublishedContent> pageList)
+        {
+            var children = page.Children.Where(x => x.TemplateId > 0 && !x.Value<bool>("HideInXmlsitemap"));
+
+            if (children?.Any() != true)
+            {
+                return;
+            }
+
+            pageList.AddRange(children);
+
+            foreach (var childPage in children)
+            {
+                AddChildPages(childPage, pageList);
+            }
         }
 
         /// <summary>
