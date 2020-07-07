@@ -74,7 +74,10 @@ namespace HappyPorch.UmbracoExtensions.Core.Components
                         // remove the placeholders of properties that the current user is allowed to see
                         foreach (var property in tab.Properties)
                         {
-                            property.Description = _hideForPlaceHolderRegex.Replace(property.Description, string.Empty)?.Trim();
+                            if (property.Description != null)
+                            {
+                                property.Description = _hideForPlaceHolderRegex.Replace(property.Description, string.Empty)?.Trim();
+                            }
                         }
                     }
                 }
