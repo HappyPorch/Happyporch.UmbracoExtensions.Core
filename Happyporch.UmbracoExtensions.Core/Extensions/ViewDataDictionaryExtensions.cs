@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace HappyPorch.UmbracoExtensions.Extensions
+namespace HappyPorch.UmbracoExtensions.Core.Extensions
 {
     public static class ViewDataDictionaryExtensions
     {
