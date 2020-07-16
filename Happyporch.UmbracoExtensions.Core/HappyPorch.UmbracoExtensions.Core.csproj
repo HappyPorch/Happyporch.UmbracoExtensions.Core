@@ -406,6 +406,7 @@
     <Compile Include="Components\AllowDeletionComponent.cs" />
     <Compile Include="Components\ErrorPagesComponent.cs" />
     <Compile Include="Components\RemoveDashboardComponent.cs" />
+    <Compile Include="Components\ImageProcessorComponent.cs" />
     <Compile Include="Components\RoutingComponent.cs" />
     <Compile Include="Components\SubscribeToEditorModelEventsComponent.cs" />
     <Compile Include="Controllers\RobotsController.cs" />
