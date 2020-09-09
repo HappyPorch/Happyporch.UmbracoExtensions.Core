@@ -8,6 +8,21 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
 {
     public static class LinkExtensions
     {
+        /// Event delegates used to customise the links from a project.
+        /// Can be initialised from a UserComponent class in the consuming project.
+        /// Example usage:
+        /// 
+        /// LinkExtensions.OnLinkBuilderCustomisation += (tagBuilder, link, url, target) =>
+        /// {
+        ///   if (link?.Target == "_blank")
+        ///   {
+        ///     tagBuilder.MergeAttribute("rel", "nofollow");
+        ///   }
+        /// };
+        ///
+        public delegate void LinkBuilderCustomisation(TagBuilder tagBuilder, Link link = null, string url = null, string target = null);
+        public static event LinkBuilderCustomisation OnLinkBuilderCustomisation;
+
         /// <summary>
         /// Displays a link tag.
         /// </summary>
@@ -50,6 +65,8 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
                 tagBuilder.MergeAttribute("class", cssClass);
             }
             tagBuilder.SetInnerText(innerText ?? link?.Name);
+
+            OnLinkBuilderCustomisation?.Invoke(tagBuilder, link: link);
 
             return new HtmlString(tagBuilder.ToString());
         }
@@ -107,6 +124,8 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
             tagBuilder.MergeAttribute("target", link?.Target);
             tagBuilder.InnerHtml = str.ToString();
 
+            OnLinkBuilderCustomisation?.Invoke(tagBuilder, link: link);
+
             return new HtmlString(tagBuilder.ToString());
         }
 
@@ -128,6 +147,8 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
             tagBuilder.MergeAttribute("href", url);
             tagBuilder.MergeAttribute("target", target);
             tagBuilder.InnerHtml = str.ToString();
+
+            OnLinkBuilderCustomisation?.Invoke(tagBuilder, url: url, target: target);
 
             return new HtmlString(tagBuilder.ToString());
         }
@@ -167,6 +188,8 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
             tagBuilder.MergeAttribute("target", link.Target);
             tagBuilder.MergeAttribute("class", cssClass);
             tagBuilder.InnerHtml = content.ToString();
+
+            OnLinkBuilderCustomisation?.Invoke(tagBuilder, link: link);
 
             return new HtmlString(tagBuilder.ToString());
         }
