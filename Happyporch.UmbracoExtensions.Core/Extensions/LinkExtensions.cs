@@ -12,13 +12,15 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
         /// Can be initialised from a UserComponent class in the consuming project.
         /// Example usage:
         /// 
-        /// LinkExtensions.OnLinkBuilderCustomisation += (tagBuilder, link, url, target) =>
+        /// LinkExtensions.OnLinkBuilderCustomisation += LinkExtensions_OnLinkBuilderCustomisation;
+        /// 
+        /// private void LinkExtensions_OnLinkBuilderCustomisation(TagBuilder tagBuilder, Link link = null, string url = null, string target = null)
         /// {
         ///   if (link?.Target == "_blank")
         ///   {
         ///     tagBuilder.MergeAttribute("rel", "nofollow");
         ///   }
-        /// };
+        /// }
         ///
         public delegate void LinkBuilderCustomisation(TagBuilder tagBuilder, Link link = null, string url = null, string target = null);
         public static event LinkBuilderCustomisation OnLinkBuilderCustomisation;
