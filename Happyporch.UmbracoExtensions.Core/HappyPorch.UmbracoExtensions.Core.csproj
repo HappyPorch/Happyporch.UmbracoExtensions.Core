@@ -429,6 +429,8 @@
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\ErrorPageService.cs" />
     <Compile Include="Services\SiteMapService.cs" />
+    <Compile Include="TechnicalManual\TechnicalManualController.cs" />
+    <Compile Include="TechnicalManual\TechnicalManualDashboard.cs" />
     <Compile Include="ValueConverters\NestedContentElementsValueConverter.cs" />
   </ItemGroup>
   <ItemGroup>
