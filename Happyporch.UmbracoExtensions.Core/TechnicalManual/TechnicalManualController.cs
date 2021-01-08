@@ -90,6 +90,12 @@ namespace HappyPorch.UmbracoExtensions.Core.TechnicalManual
                 {
                     var value = elementProperty.GetValue();
 
+                    if (value == null && bluePrint.EditedCultures?.Any() == true)
+                    {
+                        // try it with default culture
+                        value = elementProperty.GetValue(bluePrint.EditedCultures.FirstOrDefault());
+                    }
+
                     if (value == null)
                     {
                         continue;
@@ -357,6 +363,12 @@ namespace HappyPorch.UmbracoExtensions.Core.TechnicalManual
                     if (bluePrintProperty != null)
                     {
                         var value = bluePrintProperty.GetValue();
+
+                        if (value == null && bluePrint.EditedCultures?.Any() == true)
+                        {
+                            // try it with default culture
+                            value = bluePrintProperty.GetValue(bluePrint.EditedCultures.FirstOrDefault());
+                        }
 
                         if (value != null)
                         {
