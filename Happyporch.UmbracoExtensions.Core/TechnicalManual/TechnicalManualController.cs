@@ -231,8 +231,6 @@ namespace HappyPorch.UmbracoExtensions.Core.TechnicalManual
                 // get URL of an example page
                 var content = Umbraco.ContentAtXPath($"//{documentType.Alias}").FirstOrDefault(c => c.ContentType.Alias == documentType.Alias && c.TemplateId > 0);
 
-                // https://our.umbraco.com/documentation/Reference/Language-Variation/
-
                 docTypes.AppendLine($"<div class=\"umb-panel-group__details-check-description\">");
                 docTypes.AppendLine($"{documentType.Description} {(content != null ? $"<a href=\"{content.Url}\" target=\"_blank\" class=\"btn-link -underline\">Example here</a>" : null)}");
                 docTypes.AppendLine("</div>");
