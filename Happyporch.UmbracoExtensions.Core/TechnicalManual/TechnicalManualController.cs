@@ -11,6 +11,7 @@ using System.Web.Hosting;
 using System.Web.Http;
 using Umbraco.Core;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web.PropertyEditors;
 using Umbraco.Web.WebApi;
 
@@ -18,9 +19,18 @@ namespace HappyPorch.UmbracoExtensions.Core.TechnicalManual
 {
     public class TechnicalManualController : UmbracoAuthorizedApiController
     {
+        private readonly IVariationContextAccessor _variantContextAccessor;
+
+        public TechnicalManualController(IVariationContextAccessor variationContextAccessor)
+        {
+            _variantContextAccessor = variationContextAccessor;
+        }
+
         [HttpGet]
         public HttpResponseMessage Index()
         {
+            EnsureEnglishVariantContext();
+
             var html = GenerateManualHtml();
 
             var response = new HttpResponseMessage();
@@ -31,6 +41,19 @@ namespace HappyPorch.UmbracoExtensions.Core.TechnicalManual
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
 
             return response;
+        }
+
+        /// <summary>
+        /// Ensure that the correct English variant context is being used.
+        /// </summary>
+        private void EnsureEnglishVariantContext()
+        {
+            var englishLanguage = Services.LocalizationService.GetAllLanguages()?.FirstOrDefault(l => l.IsoCode.InvariantStartsWith("en"));
+
+            if (englishLanguage != null)
+            {
+                _variantContextAccessor.VariationContext = new VariationContext(englishLanguage.IsoCode);
+            }
         }
 
         private string GenerateManualHtml()
@@ -207,6 +230,8 @@ namespace HappyPorch.UmbracoExtensions.Core.TechnicalManual
 
                 // get URL of an example page
                 var content = Umbraco.ContentAtXPath($"//{documentType.Alias}").FirstOrDefault(c => c.ContentType.Alias == documentType.Alias && c.TemplateId > 0);
+
+                // https://our.umbraco.com/documentation/Reference/Language-Variation/
 
                 docTypes.AppendLine($"<div class=\"umb-panel-group__details-check-description\">");
                 docTypes.AppendLine($"{documentType.Description} {(content != null ? $"<a href=\"{content.Url}\" target=\"_blank\" class=\"btn-link -underline\">Example here</a>" : null)}");
