@@ -415,6 +415,7 @@
     <Compile Include="Extensions\ConfigurationExtensions.cs" />
     <Compile Include="Extensions\DateExtensions.cs" />
     <Compile Include="Extensions\HtmlStringExtensions.cs" />
+    <Compile Include="Extensions\LanguageExtensions.cs" />
     <Compile Include="Extensions\LinkExtensions.cs" />
     <Compile Include="Extensions\MediaExtensions.cs" />
     <Compile Include="Extensions\PartialViewExtensions.cs" />
