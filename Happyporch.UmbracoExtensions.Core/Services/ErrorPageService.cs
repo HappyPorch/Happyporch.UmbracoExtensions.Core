@@ -19,17 +19,34 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
         private const string tempLiveDomain = ".80d-live.com";
         private readonly IUmbracoContextFactory _contextFactory;
         private readonly IDomainService _domainService;
+        private readonly ILocalizationService _localizationService;
         private readonly ILogger _logger;
+        private readonly IVariationContextAccessor _variantContextAccessor;
         private readonly UmbracoContextReference _contextReference;
         private readonly Uri _originalRequest;
 
-        public ErrorPageService(IUmbracoContextFactory contextFactory, IDomainService domainService, ILogger logger, Uri originalRequest = null)
+        public ErrorPageService(IUmbracoContextFactory contextFactory, IDomainService domainService, ILocalizationService localizationService, ILogger logger, IVariationContextAccessor variationContextAccessor, Uri originalRequest = null)
         {
             _contextFactory = contextFactory;
             _domainService = domainService;
+            _localizationService = localizationService;
             _logger = logger;
+            _variantContextAccessor = variationContextAccessor;
             _contextReference = _contextFactory.EnsureUmbracoContext();
             _originalRequest = originalRequest ?? _contextReference.UmbracoContext.HttpContext.Request.Url;
+        }
+
+        /// <summary>
+        /// Ensure that the correct English variant context is being used.
+        /// </summary>
+        private void EnsureEnglishVariantContext()
+        {
+            var englishLanguage = _localizationService.GetAllLanguages()?.FirstOrDefault(l => l.IsoCode.InvariantStartsWith("en"));
+
+            if (englishLanguage != null)
+            {
+                _variantContextAccessor.VariationContext = new VariationContext(englishLanguage.IsoCode);
+            }
         }
 
         /// <summary>
@@ -38,6 +55,8 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
         /// <returns></returns>
         public IEnumerable<IPublishedContent> GetErrorPages()
         {
+            EnsureEnglishVariantContext();
+
             var cache = _contextReference.UmbracoContext.Content;
             var pages = cache.GetByXPath("//errorPage").ToList();
             return pages;

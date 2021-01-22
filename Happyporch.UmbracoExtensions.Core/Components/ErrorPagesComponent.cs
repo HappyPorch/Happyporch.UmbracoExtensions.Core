@@ -1,14 +1,15 @@
-﻿using Umbraco.Core.Logging;
+﻿using HappyPorch.UmbracoExtensions.Core.Services;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
-using Umbraco.Core.Services.Implement;
 using Umbraco.Core.Events;
-using Umbraco.Web;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Services;
-using System.Text.RegularExpressions;
-using HappyPorch.UmbracoExtensions.Core.Services;
+using Umbraco.Core.Services.Implement;
+using Umbraco.Web;
 
 namespace HappyPorch.UmbracoExtensions.Core.Components
 {
@@ -25,13 +26,17 @@ namespace HappyPorch.UmbracoExtensions.Core.Components
     {
         private readonly IUmbracoContextFactory _contextFactory;
         private readonly IDomainService _domainService;
+        private readonly ILocalizationService _localizationService;
         private readonly ILogger _logger;
+        private readonly IVariationContextAccessor _variationContextAccessor;
 
-        public ErrorPagesComponent(IUmbracoContextFactory contextFactory, IDomainService domainService, ILogger logger)
+        public ErrorPagesComponent(IUmbracoContextFactory contextFactory, IDomainService domainService, ILocalizationService localizationService, ILogger logger, IVariationContextAccessor variationContextAccessor)
         {
             _contextFactory = contextFactory;
             _domainService = domainService;
+            _localizationService = localizationService;
             _logger = logger;
+            _variationContextAccessor = variationContextAccessor;
         }
 
         public void Initialize()
@@ -62,10 +67,10 @@ namespace HappyPorch.UmbracoExtensions.Core.Components
                 // generate static error pages in the background
                 Task.Run(() =>
                 {
-                    using (var errorService = new ErrorPageService(_contextFactory, _domainService, _logger, originalRequestUrl))
+                    using (var errorService = new ErrorPageService(_contextFactory, _domainService, _localizationService, _logger, _variationContextAccessor, originalRequestUrl))
                     {
                         errorService.GenerateStaticErrorPages();
-                    }   
+                    }
                 });
                 e.Messages.Add(new EventMessage("Generating error page", "The error page(s) are being regenerated, so it might take up to a minute before you see the changes on the website.", EventMessageType.Info));
             }
@@ -85,7 +90,7 @@ namespace HappyPorch.UmbracoExtensions.Core.Components
 
                 var statusCode = content.GetValue<string>(statusCodeAlias);
                 statusCode = Regex.Match(statusCode, @"\d+").Value;
-                var errorPageService = new ErrorPageService(_contextFactory, _domainService, _logger);
+                var errorPageService = new ErrorPageService(_contextFactory, _domainService, _localizationService, _logger, _variationContextAccessor);
 
                 if (errorPageService.HasDuplicateErrorPage(statusCode, content.Id, content.ParentId))
                 {
