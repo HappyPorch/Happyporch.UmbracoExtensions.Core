@@ -2,21 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using Umbraco.Core.Logging;
+using Umbraco.Core;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Core.Services;
 using Umbraco.Web;
 
 namespace HappyPorch.UmbracoExtensions.Core.Services
 {
     public class SiteMapService
     {
-        private readonly UmbracoContext _context;
-        private readonly ILogger _logger;
+        private readonly IUmbracoContextFactory _contextFactory;
+        private readonly IVariationContextAccessor _variantContextAccessor;
+        private readonly ILocalizationService _localizationService;
 
-        public SiteMapService(UmbracoContext context, ILogger logger)
+        public SiteMapService(IUmbracoContextFactory contextFactory, IVariationContextAccessor variationContextAccessor, ILocalizationService localizationService)
         {
-            _context = context;
-            _logger = logger;
+            _contextFactory = contextFactory;
+            _variantContextAccessor = variationContextAccessor;
+            _localizationService = localizationService;
+        }
+
+        /// <summary>
+        /// Ensure that the correct English variant context is being used.
+        /// </summary>
+        private void EnsureEnglishVariantContext()
+        {
+            var englishLanguage = _localizationService.GetAllLanguages()?.FirstOrDefault(l => l.IsoCode.InvariantStartsWith("en"));
+
+            if (englishLanguage != null)
+            {
+                _variantContextAccessor.VariationContext = new VariationContext(englishLanguage.IsoCode);
+            }
         }
 
         /// <summary>
@@ -27,13 +43,14 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
         /// <returns></returns>
         public IEnumerable<IPublishedContent> GetSiteMapPages(int? rootNodeId = null)
         {
-            if (_context == null)
-                return null;
+            EnsureEnglishVariantContext();
+
+            var context = _contextFactory.EnsureUmbracoContext().UmbracoContext;
 
             // get all root nodes, or specific root node
             var rootNodes = rootNodeId.HasValue
-                ? new List<IPublishedContent> { _context.Content.GetById(rootNodeId.Value) }
-                : _context.Content.GetAtRoot()
+                ? new List<IPublishedContent> { context.Content.GetById(rootNodeId.Value) }
+                : context.Content.GetAtRoot()
                     .Where(x => (x.TemplateId > 0) && x.Value<bool>("HideInXmlsitemap") == false);
 
             if (!rootNodes.Any())
@@ -101,9 +118,17 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
                 {
                     foreach (var culture in page.Cultures)
                     {
+                        var pageUrl = page.Url(culture.Key, mode: UrlMode.Absolute);
+
+                        if (pageUrl == "#")
+                        {
+                            // skip any culture pages without a valid URL
+                            continue;
+                        }
+
                         var url = new XElement(xmlns + "url");
 
-                        url.Add(new XElement(xmlns + "loc", page.Url(culture.Key, mode: UrlMode.Absolute)));
+                        url.Add(new XElement(xmlns + "loc", pageUrl));
                         url.Add(new XElement(xmlns + "lastmod", page.UpdateDate.ToString("yyyy-MM-dd")));
 
                         urlSet.Add(url);
