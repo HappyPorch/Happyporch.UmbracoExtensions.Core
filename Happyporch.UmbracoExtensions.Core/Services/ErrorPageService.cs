@@ -58,7 +58,8 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
             EnsureEnglishVariantContext();
 
             var cache = _contextReference.UmbracoContext.Content;
-            var pages = cache.GetByXPath("//errorPage").ToList();
+            // use XPath query to match both default error page and custom ones created for a site
+            var pages = cache.GetByXPath("//*[contains(translate(local-name(), 'E', 'e'),'errorPage')]").ToList();
             return pages;
         }
 

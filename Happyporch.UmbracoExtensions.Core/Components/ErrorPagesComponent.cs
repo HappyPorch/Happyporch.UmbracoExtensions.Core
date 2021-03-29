@@ -54,7 +54,7 @@ namespace HappyPorch.UmbracoExtensions.Core.Components
             // only when website settings or an error page is published do we want to generate the static version
             var validAliases = new[] { "websiteSettings", "errorPage" };
 
-            if (e.PublishedEntities.All(x => !validAliases.Contains(x.ContentType.Alias)))
+            if (e.PublishedEntities.All(x => !validAliases.Any(a => x.ContentType.Alias.InvariantContains(a))))
             {
                 // website settings or error page wasn't published, nothing to update
                 return;
@@ -82,7 +82,7 @@ namespace HappyPorch.UmbracoExtensions.Core.Components
 
             foreach (var content in e.SavedEntities)
             {
-                if (content.ContentType.Alias != "errorPage")
+                if (!content.ContentType.Alias.InvariantContains("errorPage"))
                 {
                     // not an error page
                     continue;
