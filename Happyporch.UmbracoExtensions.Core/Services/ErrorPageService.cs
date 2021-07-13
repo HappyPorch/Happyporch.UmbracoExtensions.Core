@@ -142,13 +142,20 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
             //var requestOtherUrls = contextReference.UmbracoContext.UrlProvider.GetOtherUrls(page.Id);
             using (var webClient = new WebClient())
             {
-                var uriBuilder = new UriBuilder();
-                uriBuilder.Scheme = _originalRequest.Scheme;
-                uriBuilder.Host = _originalRequest.Host;
+                var pageUri = new Uri(page.Url(culture, UrlMode.Absolute));
 
-                var requestUri = new Uri(uriBuilder.Uri, page.UrlSegment(culture));
+                if (pageUri.Host.Contains(IPAddress.Loopback.ToString()))
+                {
+                    // use request host name instead
+                    var uriBuilder = new UriBuilder();
+                    uriBuilder.Scheme = _originalRequest.Scheme;
+                    uriBuilder.Host = _originalRequest.Host;
+
+                    pageUri = new Uri(uriBuilder.Uri, page.Url(culture, UrlMode.Relative));
+                }
+
                 webClient.Encoding = Encoding.UTF8;
-                output = webClient.DownloadString(requestUri.AbsoluteUri);
+                output = webClient.DownloadString(pageUri.AbsoluteUri);
             }
 
             return output;
