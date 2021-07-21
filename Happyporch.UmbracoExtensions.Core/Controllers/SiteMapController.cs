@@ -21,7 +21,7 @@ namespace HappyPorch.UmbracoExtensions.Core.Controllers
         [HttpGet]
         public ActionResult Xml(int? rootNodeId = null)
         {
-            var xml = new SiteMapService(_contextFactory, _variantContextAccessor, Services.LocalizationService).GetSiteMapXmlString(rootNodeId);
+            var xml = new SiteMapService(_contextFactory, _variantContextAccessor, Services.LocalizationService, Services.DomainService).GetSiteMapXmlString(rootNodeId);
             return Content(xml, "text/xml", Encoding.UTF8);
         }
     }

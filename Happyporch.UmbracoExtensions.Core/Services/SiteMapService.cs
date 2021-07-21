@@ -14,12 +14,14 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
         private readonly IUmbracoContextFactory _contextFactory;
         private readonly IVariationContextAccessor _variantContextAccessor;
         private readonly ILocalizationService _localizationService;
+        private readonly IDomainService _domainService;
 
-        public SiteMapService(IUmbracoContextFactory contextFactory, IVariationContextAccessor variationContextAccessor, ILocalizationService localizationService)
+        public SiteMapService(IUmbracoContextFactory contextFactory, IVariationContextAccessor variationContextAccessor, ILocalizationService localizationService, IDomainService domainService)
         {
             _contextFactory = contextFactory;
             _variantContextAccessor = variationContextAccessor;
             _localizationService = localizationService;
+            _domainService = domainService;
         }
 
         /// <summary>
@@ -56,9 +58,36 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
             if (!rootNodes.Any())
                 return null;
 
+            var rootNodeList = new List<IPublishedContent>();
+
+            if (rootNodes.Count() > 1)
+            {
+                // check for any domains and only use the node that matches the current domain
+                var domains = _domainService.GetAll(false).ToArray();
+
+                if (domains?.Any() == true)
+                {
+                    var currentRequestDomain = context.HttpContext.Request.Url.Host;
+
+                    foreach (var rootNode in rootNodes)
+                    {
+                        var rootNodeDomains = domains.Where(d => d.RootContentId.GetValueOrDefault() == rootNode.Id).ToList();
+
+                        if (rootNodeDomains?.Any(d => d.DomainName.InvariantContains(currentRequestDomain)) == true)
+                        {
+                            rootNodeList.Add(rootNode);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                rootNodeList.AddRange(rootNodes);
+            }
+
             var pageList = new List<IPublishedContent>();
 
-            foreach (var page in rootNodes)
+            foreach (var page in rootNodeList)
             {
                 pageList.Add(page);
 
