@@ -115,6 +115,7 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
                 .Select(r => r.ChildId != page.Id ? r.ChildId : r.ParentId)                                 // get the id of the related pages
                 .Select(i => Current.Services.RelationService.GetByParentOrChildId(i))                      // get the ids of 2nd level relations
                 .SelectMany(i => i)                                                                         // puts them all in one list
+                .Where(r => r.RelationType.Name == "Translations")
                 .Select(r => Current.UmbracoHelper.Content(r.ChildId != page.Id ? r.ChildId : r.ParentId))  // convert to IPublishedContent
                 .Where(p => p != null)                                                                      // remove unpublished pages
                 .DistinctBy(p => p.Id);                                                                     // remove duplicates
