@@ -61,7 +61,12 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
             var tagBuilder = new TagBuilder("a");
 
             tagBuilder.MergeAttribute("href", link?.Url);
-            tagBuilder.MergeAttribute("target", link?.Target);
+            
+            if (!string.IsNullOrEmpty(link?.Target))
+            {
+                tagBuilder.MergeAttribute("target", link?.Target);
+            }
+
             if (cssClass != null)
             {
                 tagBuilder.MergeAttribute("class", cssClass);
@@ -123,7 +128,12 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
             var tagBuilder = new TagBuilder("a");
 
             tagBuilder.MergeAttribute("href", link?.Url);
-            tagBuilder.MergeAttribute("target", link?.Target);
+
+            if (!string.IsNullOrEmpty(link?.Target))
+            {
+                tagBuilder.MergeAttribute("target", link?.Target);
+            }
+
             tagBuilder.InnerHtml = str.ToString();
 
             OnLinkBuilderCustomisation?.Invoke(tagBuilder, link: link);
@@ -147,7 +157,12 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
             var tagBuilder = new TagBuilder("a");
 
             tagBuilder.MergeAttribute("href", url);
-            tagBuilder.MergeAttribute("target", target);
+            
+            if (!string.IsNullOrEmpty(target))
+            {
+                tagBuilder.MergeAttribute("target", target);
+            }
+
             tagBuilder.InnerHtml = str.ToString();
 
             OnLinkBuilderCustomisation?.Invoke(tagBuilder, url: url, target: target);
@@ -187,7 +202,12 @@ namespace HappyPorch.UmbracoExtensions.Core.Extensions
             var tagBuilder = new TagBuilder("a");
 
             tagBuilder.MergeAttribute("href", link.Url);
-            tagBuilder.MergeAttribute("target", link.Target);
+
+            if (!string.IsNullOrEmpty(link.Target))
+            {
+                tagBuilder.MergeAttribute("target", link.Target);
+            }
+
             tagBuilder.MergeAttribute("class", cssClass);
             tagBuilder.InnerHtml = content.ToString();
 
