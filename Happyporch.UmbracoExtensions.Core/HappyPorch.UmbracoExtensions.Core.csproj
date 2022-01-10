@@ -403,6 +403,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationConstants.cs" />
+    <Compile Include="Components\MediaDeletionComponent.cs" />
     <Compile Include="Components\AllowDeletionComponent.cs" />
     <Compile Include="Components\ErrorPagesComponent.cs" />
     <Compile Include="Components\RemoveDashboardComponent.cs" />
