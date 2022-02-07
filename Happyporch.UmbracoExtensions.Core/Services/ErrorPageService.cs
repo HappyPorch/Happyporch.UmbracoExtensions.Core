@@ -208,6 +208,11 @@ namespace HappyPorch.UmbracoExtensions.Core.Services
             html.AppendLine("<%-- set correct site name based on requested domain and culture --%>");
             html.AppendLine("<% string siteName = \"\"; %>");
             html.AppendLine("<% string hostName = Request.Url.Host; %>");
+            
+            // include language path for sites that support multiple languages (assumption is that 2 letter language code is used, e.g. /fr, /de
+            html.AppendLine("<% System.Text.RegularExpressions.Match languagePathMatch = System.Text.RegularExpressions.Regex.Match(Request.RawUrl, \"^/(.{ 2})/\"); %>");
+            html.AppendLine("<% if (languagePathMatch.Success) { hostName += languagePathMatch.Groups[0]; } %> ");
+            
             html.AppendLine("<% string culture = \"\"; %>");
             html.AppendLine();
             var domains = _domainService.GetAll(false).ToArray();
