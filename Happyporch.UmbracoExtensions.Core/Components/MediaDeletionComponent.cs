@@ -63,6 +63,12 @@ namespace HappyPorch.UmbracoExtensions.Core.Components
 
         private void UpdateMediaFile(IMedia media, bool obfuscate)
         {
+            if (!media.Properties.Contains(Constants.Conventions.Media.File))
+            {
+                // not a media file, so ignore
+                return;
+            }
+
             var file = media.Properties[Constants.Conventions.Media.File];
 
             var fileSrc = file.GetValue()?.ToString();
